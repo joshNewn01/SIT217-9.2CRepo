@@ -1,483 +1,916 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Campus Corner Cafe — Ordering, your way</title> /*title*/
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#F3EEE0;
-    --bg-raised:#EBE4D2;
-    --ink:#241C15;
-    --ink-soft:#5B5245;
-    --rust:#A8461F;
-    --rust-dark:#7E340F;
-    --sage:#6B7A5E;
-    --mustard:#D9A441;
-    --line:rgba(36,28,21,0.14);
-    --paper-shadow: 0 1px 0 rgba(36,28,21,0.06);
-    --radius: 6px;
-  }
-
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'Work Sans', sans-serif;
-    font-size:16px;
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3{
-    font-family:'Fraunces', serif;
-    font-weight:500;
-    margin:0;
-    color:var(--ink);
-  }
-  a{color:inherit;}
-  img,svg{display:block;max-width:100%;}
-  button{font-family:inherit;cursor:pointer;}
-  :focus-visible{outline:2px solid var(--rust);outline-offset:3px;}
-
-  .wrap{max-width:1120px;margin:0 auto;padding:0 28px;}
-
-  /* Header */
-  header{
-    position:sticky;top:0;z-index:50;
-    background:rgba(243,238,224,0.92);
-    backdrop-filter:blur(6px);
-    border-bottom:1px solid var(--line);
-  }
-  .nav-row{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:18px 0;transition:padding .2s ease;
-  }
-  header.shrink .nav-row{padding:11px 0;}
-  .wordmark{
-    font-family:'Fraunces', serif;font-weight:500;font-size:20px;
-    display:flex;align-items:center;gap:9px;text-decoration:none;
-  }
-  .wordmark .dot{width:8px;height:8px;border-radius:50%;background:var(--rust);}
-  nav.links{display:flex;gap:32px;align-items:center;}
-  nav.links a{
-    text-decoration:none;color:var(--ink-soft);font-size:15px;font-weight:500;
-    transition:color .15s ease;
-  }
-  nav.links a:hover{color:var(--ink);}
-  .status-pill{
-    font-size:13px;color:var(--sage);border:1px solid var(--sage);
-    padding:5px 12px;border-radius:100px;font-weight:500;
-  }
-  .menu-toggle{display:none;background:none;border:none;padding:4px;}  /*menu*/
-  .menu-toggle span{display:block;width:22px;height:2px;background:var(--ink);margin:5px 0;}
-
-  /* Hero */
-  .hero{padding:76px 0 92px;}
-  .hero-grid{
-    display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:center;
-  }
-  .hero h1{
-    font-size:clamp(38px,5vw,58px);line-height:1.08;letter-spacing:-0.01em;
-  }
-  .hero p.lede{
-    margin-top:22px;font-size:18px;color:var(--ink-soft);max-width:46ch;
-  }
-  .signup{
-    margin-top:34px;display:flex;gap:10px;max-width:440px;flex-wrap:wrap;
-  }
-  .signup input{
-    flex:1;min-width:200px;padding:13px 16px;border:1px solid var(--line);
-    border-radius:var(--radius);background:var(--bg-raised);font-family:inherit;
-    font-size:15px;color:var(--ink);
-  }
-  .signup input::placeholder{color:var(--ink-soft);}
-  .btn{
-    padding:13px 22px;border-radius:var(--radius);border:none;
-    background:var(--rust);color:#fff;font-weight:600;font-size:15px;
-    white-space:nowrap;transition:background .15s ease, transform .1s ease;
-  }
-  .btn:hover{background:var(--rust-dark);}
-  .btn:active{transform:translateY(1px);}
-  .btn.outline{background:transparent;border:1px solid var(--ink);color:var(--ink);}
-  .btn.outline:hover{background:var(--ink);color:var(--bg);}
-  .form-msg{margin-top:12px;font-size:14px;min-height:20px;color:var(--sage);font-weight:500;}
-  .fine{margin-top:10px;font-size:13px;color:var(--ink-soft);}
-
-  .ticket{
-    background:var(--bg-raised);border:1px solid var(--line);border-radius:10px;
-    padding:26px 26px 22px;box-shadow:var(--paper-shadow);position:relative;
-  }
-  .ticket::before,.ticket::after{
-    content:"";position:absolute;top:-1px;width:16px;height:16px;border-radius:50%;
-    background:var(--bg);border:1px solid var(--line);
-  }
-  .ticket::before{left:-8px;}
-  .ticket::after{right:-8px;}
-  .ticket .t-head{
-    display:flex;justify-content:space-between;align-items:baseline;
-    border-bottom:1px dashed var(--line);padding-bottom:12px;margin-bottom:14px;
-  }
-  .ticket .t-head span:first-child{font-family:'Fraunces',serif;font-size:17px;}
-  .ticket .t-head span:last-child{font-size:13px;color:var(--sage);font-weight:600;}
-  .t-item{display:flex;justify-content:space-between;padding:7px 0;font-size:14.5px;}
-  .t-item small{display:block;color:var(--ink-soft);font-size:12.5px;margin-top:2px;}
-  .t-total{
-    display:flex;justify-content:space-between;margin-top:14px;padding-top:12px;
-    border-top:1px solid var(--line);font-weight:600;font-size:15px;
-  }
-  .t-status{
-    margin-top:16px;background:rgba(107,122,94,0.12);color:var(--sage);
-    padding:9px 12px;border-radius:5px;font-size:13.5px;font-weight:600;
-    display:flex;align-items:center;gap:8px;
-  }
-  .t-status .pulse{
-    width:7px;height:7px;border-radius:50%;background:var(--sage);
-    animation:pulse 1.6s ease-in-out infinite;
-  }
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
-
-  /* Section shell */
-  section{padding:78px 0;border-top:1px solid var(--line);}
-  .section-head{max-width:640px;margin-bottom:44px;}
-  .section-head h2{font-size:clamp(28px,3.4vw,36px);}
-  .section-head p{margin-top:14px;color:var(--ink-soft);font-size:16.5px;}
-
-  /* Menu board (feature list) */
-  .board{max-width:760px;}
-  .board-row{
-    display:flex;align-items:baseline;gap:14px;padding:20px 0;
-    border-bottom:1px solid var(--line);
-  }
-  .board-row:first-child{border-top:1px solid var(--line);}
-  .board-row .name{
-    font-family:'Fraunces',serif;font-size:20px;white-space:nowrap;
-  }
-  .board-row .leader{
-    flex:1;border-bottom:2px dotted var(--ink-soft);opacity:.4;transform:translateY(-6px);
-  }
-  .board-row .desc{
-    color:var(--ink-soft);font-size:15px;max-width:340px;text-align:right;
-  }
-
-  /* Steps */
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
-  .step{padding-top:18px;border-top:2px solid var(--ink);}
-  .step .num{font-family:'Fraunces',serif;font-size:15px;color:var(--rust);font-weight:600;}
-  .step h3{margin-top:10px;font-size:20px;}
-  .step p{margin-top:8px;color:var(--ink-soft);font-size:15px;}
-
-  /* Loyalty demo */
-  .loyalty-card{
-    background:var(--ink);color:var(--bg);border-radius:14px;
-    padding:36px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;
-  }
-  .loyalty-copy p{color:rgba(243,238,224,0.72);margin-top:10px;max-width:38ch;}
-  .stamps{display:flex;gap:10px;flex-wrap:wrap;max-width:280px;}
-  .stamp{
-    width:38px;height:38px;border-radius:50%;border:2px solid rgba(243,238,224,0.35);
-    display:flex;align-items:center;justify-content:center;transition:all .25s ease;
-  }
-  .stamp.filled{
-    background:var(--mustard);border-color:var(--mustard);
-  }
-  .stamp svg{width:16px;height:16px;opacity:0;transition:opacity .2s ease;}
-  .stamp.filled svg{opacity:1;}
-  .loyalty-actions{margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
-  .loyalty-status{font-size:14px;color:var(--mustard);font-weight:600;min-height:20px;}
-  .btn.mustard{background:var(--mustard);color:var(--ink);}
-  .btn.mustard:hover{background:#c4933a;}
-  .btn.ghost{background:transparent;color:var(--bg);border:1px solid rgba(243,238,224,0.35);}
-  .btn.ghost:hover{background:rgba(243,238,224,0.1);}
-
-  /* Footer */
-  footer{padding:56px 0 40px;border-top:1px solid var(--line);}
-  .footer-grid{
-    display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:40px;
-  }
-  footer h3{font-size:15px;margin-bottom:14px;}
-  footer p, footer li{color:var(--ink-soft);font-size:14.5px;}
-  footer ul{list-style:none;padding:0;margin:0;display:grid;gap:8px;}
-  .copyright{
-    margin-top:48px;padding-top:22px;border-top:1px solid var(--line);
-    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
-    font-size:13px;color:var(--ink-soft);
-  }
-
-  @media (max-width: 860px){
-    .hero-grid{grid-template-columns:1fr;}
-    .steps{grid-template-columns:1fr;}
-    .loyalty-card{grid-template-columns:1fr;}
-    .footer-grid{grid-template-columns:1fr;gap:28px;}
-    .board-row .desc{display:none;}
-  }
-  @media (max-width: 680px){
-    nav.links{
-      position:fixed;top:0;right:0;height:100vh;width:min(78vw,300px);
-      background:var(--bg);border-left:1px solid var(--line);
-      flex-direction:column;align-items:flex-start;padding:90px 28px 28px;
-      transform:translateX(100%);transition:transform .25s ease;gap:22px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Corner Cafe — Ordering, your way</title> /*title*/
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      /* colours */
+      --bg: #F3EEE0;
+      --bg-raised: #EBE4D2;
+      --ink: #241C15;
+      --ink-soft: #5B5245;
+      --rust: #A8461F;
+      --rust-dark: #7E340F;
+      --sage: #6B7A5E;
+      --mustard: #D9A441;
+      --line: rgba(36, 28, 21, 0.14);
+      --paper-shadow: 0 1px 0 rgba(36, 28, 21, 0.06);
+      --radius: 6px;
     }
-    nav.links.open{transform:translateX(0);}
-    .status-pill{display:none;}
-    .menu-toggle{display:block;}
-  }
 
-  @media (prefers-reduced-motion: reduce){
-    html{scroll-behavior:auto;}
-    .hero-anim{opacity:1 !important;transform:none !important;}
-    .t-status .pulse{animation:none;}
-  }
+    * {
+      box-sizing: border-box;
+    }
 
-  .hero-anim{opacity:0;transform:translateY(14px);animation:rise .6s ease forwards;}
-  .hero-anim.d2{animation-delay:.1s;}
-  .hero-anim.d3{animation-delay:.2s;}
-  @keyframes rise{to{opacity:1;transform:translateY(0);}}
-</style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Work Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--rust);
+      outline-offset: 3px;
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(243, 238, 224, 0.92);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+      transition: padding .2s ease;
+    }
+
+    header.shrink .nav-row {
+      padding: 11px 0;
+    }
+
+    .wordmark {
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+
+    .wordmark .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--rust);
+    }
+
+    nav.links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    nav.links a {
+      text-decoration: none;
+      color: var(--ink-soft);
+      font-size: 15px;
+      font-weight: 500;
+      transition: color .15s ease;
+    }
+
+    nav.links a:hover {
+      color: var(--ink);
+    }
+
+    .status-pill {
+      font-size: 13px;
+      color: var(--sage);
+      border: 1px solid var(--sage);
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-weight: 500;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
+    /*menu*/
+    .menu-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--ink);
+      margin: 5px 0;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 76px 0 92px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 5vw, 58px);
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+    }
+
+    .hero p.lede {
+      margin-top: 22px;
+      font-size: 18px;
+      color: var(--ink-soft);
+      max-width: 46ch;
+    }
+
+    .signup {
+      margin-top: 34px;
+      display: flex;
+      gap: 10px;
+      max-width: 440px;
+      flex-wrap: wrap;
+    }
+
+    .signup input {
+      flex: 1;
+      min-width: 200px;
+      padding: 13px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--bg-raised);
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--ink);
+    }
+
+    .signup input::placeholder {
+      color: var(--ink-soft);
+    }
+
+    .btn {
+      padding: 13px 22px;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--rust);
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
+      white-space: nowrap;
+      transition: background .15s ease, transform .1s ease;
+    }
+
+    .btn:hover {
+      background: var(--rust-dark);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn.outline {
+      background: transparent;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+    }
+
+    .btn.outline:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .form-msg {
+      margin-top: 12px;
+      font-size: 14px;
+      min-height: 20px;
+      color: var(--sage);
+      font-weight: 500;
+    }
+
+    .fine {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+
+    .ticket {
+      background: var(--bg-raised);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 26px 26px 22px;
+      box-shadow: var(--paper-shadow);
+      position: relative;
+    }
+
+    .ticket::before,
+    .ticket::after {
+      content: "";
+      position: absolute;
+      top: -1px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--line);
+    }
+
+    .ticket::before {
+      left: -8px;
+    }
+
+    .ticket::after {
+      right: -8px;
+    }
+
+    .ticket .t-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px dashed var(--line);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .ticket .t-head span:first-child {
+      font-family: 'Fraunces', serif;
+      font-size: 17px;
+    }
+
+    .ticket .t-head span:last-child {
+      font-size: 13px;
+      color: var(--sage);
+      font-weight: 600;
+    }
+
+    .t-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      font-size: 14.5px;
+    }
+
+    .t-item small {
+      display: block;
+      color: var(--ink-soft);
+      font-size: 12.5px;
+      margin-top: 2px;
+    }
+
+    .t-total {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .t-status {
+      margin-top: 16px;
+      background: rgba(107, 122, 94, 0.12);
+      color: var(--sage);
+      padding: 9px 12px;
+      border-radius: 5px;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .t-status .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--sage);
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .35;
+      }
+    }
+
+    /* Section shell */
+    section {
+      padding: 78px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-head {
+      max-width: 640px;
+      margin-bottom: 44px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(28px, 3.4vw, 36px);
+    }
+
+    .section-head p {
+      margin-top: 14px;
+      color: var(--ink-soft);
+      font-size: 16.5px;
+    }
+
+    /* Menu board (feature list) */
+    .board {
+      max-width: 760px;
+    }
+
+    .board-row {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .board-row:first-child {
+      border-top: 1px solid var(--line);
+    }
+
+    .board-row .name {
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      white-space: nowrap;
+    }
+
+    .board-row .leader {
+      flex: 1;
+      border-bottom: 2px dotted var(--ink-soft);
+      opacity: .4;
+      transform: translateY(-6px);
+    }
+
+    .board-row .desc {
+      color: var(--ink-soft);
+      font-size: 15px;
+      max-width: 340px;
+      text-align: right;
+    }
+
+    /* Steps */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .step {
+      padding-top: 18px;
+      border-top: 2px solid var(--ink);
+    }
+
+    .step .num {
+      font-family: 'Fraunces', serif;
+      font-size: 15px;
+      color: var(--rust);
+      font-weight: 600;
+    }
+
+    .step h3 {
+      margin-top: 10px;
+      font-size: 20px;
+    }
+
+    .step p {
+      margin-top: 8px;
+      color: var(--ink-soft);
+      font-size: 15px;
+    }
+
+    /* Loyalty demo */
+    .loyalty-card {
+      background: var(--ink);
+      color: var(--bg);
+      border-radius: 14px;
+      padding: 36px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .loyalty-copy p {
+      color: rgba(243, 238, 224, 0.72);
+      margin-top: 10px;
+      max-width: 38ch;
+    }
+
+    .stamps {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      max-width: 280px;
+    }
+
+    .stamp {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid rgba(243, 238, 224, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .25s ease;
+    }
+
+    .stamp.filled {
+      background: var(--mustard);
+      border-color: var(--mustard);
+    }
+
+    .stamp svg {
+      width: 16px;
+      height: 16px;
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+
+    .stamp.filled svg {
+      opacity: 1;
+    }
+
+    .loyalty-actions {
+      margin-top: 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .loyalty-status {
+      font-size: 14px;
+      color: var(--mustard);
+      font-weight: 600;
+      min-height: 20px;
+    }
+
+    .btn.mustard {
+      background: var(--mustard);
+      color: var(--ink);
+    }
+
+    .btn.mustard:hover {
+      background: #c4933a;
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--bg);
+      border: 1px solid rgba(243, 238, 224, 0.35);
+    }
+
+    .btn.ghost:hover {
+      background: rgba(243, 238, 224, 0.1);
+    }
+
+    /* Footer */
+    footer {
+      padding: 56px 0 40px;
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr;
+      gap: 40px;
+    }
+
+    footer h3 {
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+
+    footer p,
+    footer li {
+      color: var(--ink-soft);
+      font-size: 14.5px;
+    }
+
+    footer ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .copyright {
+      margin-top: 48px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--ink-soft);
+    }
+
+    @media (max-width: 860px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      .loyalty-card {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .board-row .desc {
+        display: none;
+      }
+    }
+
+    @media (max-width: 680px) {
+      nav.links {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: min(78vw, 300px);
+        background: var(--bg);
+        border-left: 1px solid var(--line);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 90px 28px 28px;
+        transform: translateX(100%);
+        transition: transform .25s ease;
+        gap: 22px;
+      }
+
+      nav.links.open {
+        transform: translateX(0);
+      }
+
+      .status-pill {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .hero-anim {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      .t-status .pulse {
+        animation: none;
+      }
+    }
+
+    .hero-anim {
+      opacity: 0;
+      transform: translateY(14px);
+      animation: rise .6s ease forwards;
+    }
+
+    .hero-anim.d2 {
+      animation-delay: .1s;
+    }
+
+    .hero-anim.d3 {
+      animation-delay: .2s;
+    }
+
+    @keyframes rise {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<header id="site-header">
-  <div class="wrap nav-row">
-    <a href="#top" class="wordmark"><span class="dot"></span>Campus Corner Cafe</a>
-    <nav class="links" id="nav-links">
-      <a href="#board">What's changing</a>
-      <a href="#how">How it works</a>
-      <a href="#loyalty">Loyalty</a>
-      <a href="#footer">Visit us</a>
-    </nav>
-    <div style="display:flex;align-items:center;gap:16px;">
-      <span class="status-pill">Opening soon at Burwood</span>
-      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</header>
-
-<main id="top">
-  <section class="hero" style="border-top:none;padding-top:60px;">
-    <div class="wrap hero-grid">
-      <div>
-        <h1 class="hero-anim">Order ahead.<br>Skip the queue.</h1>
-        <p class="lede hero-anim d2">
-          We're bringing online ordering, real-time menu availability, and a digital
-          loyalty card to Campus Corner Cafe — so your coffee's ready when you are,
-          between lectures or meetings.
-        </p>
-        <form class="signup hero-anim d3" id="signup-form" novalidate>
-          <label for="email" class="visually-hidden" style="position:absolute;left:-9999px;">Email address</label>
-          <input type="email" id="email" name="email" placeholder="you@deakin.edu.au" required>
-          <button type="submit" class="btn">Notify me at launch</button>
-        </form>
-        <p class="form-msg hero-anim d3" id="form-msg" role="status"></p>
-        <p class="fine hero-anim d3">No spam — one email when ordering goes live, and that's it.</p>
-      </div>
-
-      <div class="ticket hero-anim d2">
-        <div class="t-head">
-          <span>Order #214</span>
-          <span>Ready in 4 min</span>
-        </div>
-        <div class="t-item">
-          <span>Flat white, oat milk<small>Extra shot</small></span>
-          <span>$5.50</span>
-        </div>
-        <div class="t-item">
-          <span>Halloumi & greens wrap</span>
-          <span>$11.00</span>
-        </div>
-        <div class="t-total"><span>Total</span><span>$16.50</span></div>
-        <div class="t-status"><span class="pulse"></span>Preparing your order</div>
+  <header id="site-header">
+    <div class="wrap nav-row">
+      <a href="#top" class="wordmark"><span class="dot"></span>Campus Corner Cafe</a>
+      <nav class="links" id="nav-links">
+        <a href="#board">What's changing</a>
+        <a href="#how">How it works</a>
+        <a href="#loyalty">Loyalty</a>
+        <a href="#footer">Visit us</a>
+      </nav>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span class="status-pill">Opening soon at Burwood</span>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
-  </section>
+  </header>
 
-  <section id="board">
-    <div class="wrap">
-      <div class="section-head">
-        <h2>What's changing</h2>
-        <p>Four things that replace the spreadsheets, stamp cards, and scattered
-          messages behind the counter today.</p>
-      </div>
-      <div class="board">
-        <div class="board-row">
-          <span class="name">Order ahead</span>
-          <span class="leader"></span>
-          <span class="desc">One app for pickup orders — no more missed DMs or calls</span>
+  <main id="top">
+    <section class="hero" style="border-top:none;padding-top:60px;">
+      <div class="wrap hero-grid">
+        <div>
+          <h1 class="hero-anim">Order ahead.<br>Skip the queue.</h1>
+          <p class="lede hero-anim d2">
+            We're bringing online ordering, real-time menu availability, and a digital
+            loyalty card to Campus Corner Cafe — so your coffee's ready when you are,
+            between lectures or meetings.
+          </p>
+          <form class="signup hero-anim d3" id="signup-form" novalidate>
+            <label for="email" class="visually-hidden" style="position:absolute;left:-9999px;">Email address</label>
+            <input type="email" id="email" name="email" placeholder="you@deakin.edu.au" required>
+            <button type="submit" class="btn">Notify me at launch</button>
+          </form>
+          <p class="form-msg hero-anim d3" id="form-msg" role="status"></p>
+          <p class="fine hero-anim d3">No spam — one email when ordering goes live, and that's it.</p>
         </div>
-        <div class="board-row">
-          <span class="name">Live menu</span>
-          <span class="leader"></span>
-          <span class="desc">Sold-out items disappear the moment stock runs low</span>
-        </div>
-        <div class="board-row">
-          <span class="name">Digital stamps</span>
-          <span class="leader"></span>
-          <span class="desc">Loyalty points tied to your account, not a paper card</span>
-        </div>
-        <div class="board-row">
-          <span class="name">Ready alerts</span>
-          <span class="leader"></span>
-          <span class="desc">A notification the second your order hits the counter</span>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section id="how">
-    <div class="wrap">
-      <div class="section-head">
-        <h2>How it'll work</h2>
-        <p>Three steps, from wherever you are on campus to a drink in your hand.</p>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <span class="num">01</span>
-          <h3>Browse & order</h3>
-          <p>Check what's actually available right now and place your order from your phone.</p>
-        </div>
-        <div class="step">
-          <span class="num">02</span>
-          <h3>Pay in the app</h3>
-          <p>Pay securely on the spot — your total, your order, no mix-ups at handover.</p>
-        </div>
-        <div class="step">
-          <span class="num">03</span>
-          <h3>Collect when ready</h3>
-          <p>Walk over when we notify you. No queuing, no guessing, no cold coffee.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="loyalty">
-    <div class="wrap">
-      <div class="section-head">
-        <h2>Your stamp card, reimagined</h2>
-        <p>Try it below — this is the same idea as the loyalty card, just one you can never lose.</p>
-      </div>
-      <div class="loyalty-card">
-        <div class="loyalty-copy">
-          <h3 style="color:var(--bg);">8 stamps, one free coffee</h3>
-          <p>Every order adds a stamp automatically. Reach 8 and your next coffee's on us — no card, no receipts to keep.</p>
-          <div class="loyalty-actions">
-            <button class="btn mustard" id="add-stamp">Add a stamp</button>
-            <button class="btn ghost" id="reset-stamp">Reset</button>
+        <div class="ticket hero-anim d2">
+          <div class="t-head">
+            <span>Order #214</span>
+            <span>Ready in 4 min</span>
           </div>
-          <p class="loyalty-status" id="loyalty-status"></p>
+          <div class="t-item">
+            <span>Flat white, oat milk<small>Extra shot</small></span>
+            <span>$5.50</span>
+          </div>
+          <div class="t-item">
+            <span>Halloumi & greens wrap</span>
+            <span>$11.00</span>
+          </div>
+          <div class="t-total"><span>Total</span><span>$16.50</span></div>
+          <div class="t-status"><span class="pulse"></span>Preparing your order</div>
         </div>
-        <div class="stamps" id="stamp-row" aria-label="Loyalty stamp progress, 0 of 8"></div>
+      </div>
+    </section>
+
+    <section id="board">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>What's changing</h2>
+          <p>Four things that replace the spreadsheets, stamp cards, and scattered
+            messages behind the counter today.</p>
+        </div>
+        <div class="board">
+          <div class="board-row">
+            <span class="name">Order ahead</span>
+            <span class="leader"></span>
+            <span class="desc">One app for pickup orders — no more missed DMs or calls</span>
+          </div>
+          <div class="board-row">
+            <span class="name">Live menu</span>
+            <span class="leader"></span>
+            <span class="desc">Sold-out items disappear the moment stock runs low</span>
+          </div>
+          <div class="board-row">
+            <span class="name">Digital stamps</span>
+            <span class="leader"></span>
+            <span class="desc">Loyalty points tied to your account, not a paper card</span>
+          </div>
+          <div class="board-row">
+            <span class="name">Ready alerts</span>
+            <span class="leader"></span>
+            <span class="desc">A notification the second your order hits the counter</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>How it'll work</h2>
+          <p>Three steps, from wherever you are on campus to a drink in your hand.</p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <span class="num">01</span>
+            <h3>Browse & order</h3>
+            <p>Check what's actually available right now and place your order from your phone.</p>
+          </div>
+          <div class="step">
+            <span class="num">02</span>
+            <h3>Pay in the app</h3>
+            <p>Pay securely on the spot — your total, your order, no mix-ups at handover.</p>
+          </div>
+          <div class="step">
+            <span class="num">03</span>
+            <h3>Collect when ready</h3>
+            <p>Walk over when we notify you. No queuing, no guessing, no cold coffee.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="loyalty">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Your stamp card, reimagined</h2>
+          <p>Try it below — this is the same idea as the loyalty card, just one you can never lose.</p>
+        </div>
+        <div class="loyalty-card">
+          <div class="loyalty-copy">
+            <h3 style="color:var(--bg);">8 stamps, one free coffee</h3>
+            <p>Every order adds a stamp automatically. Reach 8 and your next coffee's on us — no card, no receipts to
+              keep.</p>
+            <div class="loyalty-actions">
+              <button class="btn mustard" id="add-stamp">Add a stamp</button>
+              <button class="btn ghost" id="reset-stamp">Reset</button>
+            </div>
+            <p class="loyalty-status" id="loyalty-status"></p>
+          </div>
+          <div class="stamps" id="stamp-row" aria-label="Loyalty stamp progress, 0 of 8"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <h3>Campus Corner Cafe</h3>
+          <p>Independent, specialty coffee two minutes from Deakin University's Burwood campus. Run by Emma & James
+            since day one.</p>
+        </div>
+        <div>
+          <h3>Visit</h3>
+          <ul>
+            <li>221 Burwood Highway, Burwood VIC</li>
+            <li>Mon–Fri: 7am – 4pm</li>
+            <li>Sat: 8am – 2pm</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Stay in the loop</h3>
+          <ul>
+            <li><a href="#top">Join the launch list</a></li>
+            <li><a href="#board">What's changing</a></li>
+            <li><a href="#how">How it works</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        <span>© 2026 Campus Corner Cafe</span>
+        <span>Made for the people who queue with us every morning</span>
       </div>
     </div>
-  </section>
-</main>
+  </footer>
 
-<footer id="footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <h3>Campus Corner Cafe</h3>
-        <p>Independent, specialty coffee two minutes from Deakin University's Burwood campus. Run by Emma & James since day one.</p>
-      </div>
-      <div>
-        <h3>Visit</h3>
-        <ul>
-          <li>221 Burwood Highway, Burwood VIC</li>
-          <li>Mon–Fri: 7am – 4pm</li>
-          <li>Sat: 8am – 2pm</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Stay in the loop</h3>
-        <ul>
-          <li><a href="#top">Join the launch list</a></li>
-          <li><a href="#board">What's changing</a></li>
-          <li><a href="#how">How it works</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="copyright">
-      <span>© 2026 Campus Corner Cafe</span>
-      <span>Made for the people who queue with us every morning</span>
-    </div>
-  </div>
-</footer>
+  <script>
+    // Sticky header shrink
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('shrink', window.scrollY > 12);
+    }, {passive: true});
 
-<script>
-  // Sticky header shrink
-  const header = document.getElementById('site-header');
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('shrink', window.scrollY > 12);
-  }, { passive: true });
-
-  // Mobile nav toggle
-  const menuToggle = document.getElementById('menu-toggle');
-  const navLinks = document.getElementById('nav-links');
-  menuToggle.addEventListener('click', () => {
-    const isOpen = navLinks.classList.toggle('open');
-    menuToggle.setAttribute('aria-expanded', String(isOpen));
-  });
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      menuToggle.setAttribute('aria-expanded', 'false');
+    // Mobile nav toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+    menuToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
     });
-  });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
 
-  // Signup form (client-side only demo)
-  const form = document.getElementById('signup-form');
-  const emailInput = document.getElementById('email');
-  const formMsg = document.getElementById('form-msg');
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const value = emailInput.value.trim();
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-    if (!valid) {
-      formMsg.style.color = 'var(--rust)';
-      formMsg.textContent = 'That email doesn\'t look quite right — mind checking it?';
-      return;
+    // Signup form (client-side only demo)
+    const form = document.getElementById('signup-form');
+    const emailInput = document.getElementById('email');
+    const formMsg = document.getElementById('form-msg');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const value = emailInput.value.trim();
+      const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      if (!valid) {
+        formMsg.style.color = 'var(--rust)';
+        formMsg.textContent = 'That email doesn\'t look quite right — mind checking it?';
+        return;
+      }
+      formMsg.style.color = 'var(--sage)';
+      formMsg.textContent = `You're on the list — we'll email ${value} when ordering goes live.`;
+      form.reset();
+    });
+
+    // Loyalty stamp demo
+    const TOTAL_STAMPS = 8;
+    let stamps = 0;
+    const stampRow = document.getElementById('stamp-row');
+    const loyaltyStatus = document.getElementById('loyalty-status');
+    const checkSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#241C15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
+
+    function renderStamps() {
+      stampRow.innerHTML = '';
+      for (let i = 0; i < TOTAL_STAMPS; i++) {
+        const el = document.createElement('div');
+        el.className = 'stamp' + (i < stamps ? ' filled' : '');
+        el.innerHTML = i < stamps ? checkSvg : '';
+        stampRow.appendChild(el);
+      }
+      stampRow.setAttribute('aria-label', `Loyalty stamp progress, ${stamps} of ${TOTAL_STAMPS}`);
+      loyaltyStatus.textContent = stamps >= TOTAL_STAMPS
+        ? 'Free coffee unlocked — nice work.'
+        : '';
     }
-    formMsg.style.color = 'var(--sage)';
-    formMsg.textContent = `You're on the list — we'll email ${value} when ordering goes live.`;
-    form.reset();
-  });
 
-  // Loyalty stamp demo
-  const TOTAL_STAMPS = 8;
-  let stamps = 0;
-  const stampRow = document.getElementById('stamp-row');
-  const loyaltyStatus = document.getElementById('loyalty-status');
-  const checkSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="#241C15" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>`;
-
-  function renderStamps() {
-    stampRow.innerHTML = '';
-    for (let i = 0; i < TOTAL_STAMPS; i++) {
-      const el = document.createElement('div');
-      el.className = 'stamp' + (i < stamps ? ' filled' : '');
-      el.innerHTML = i < stamps ? checkSvg : '';
-      stampRow.appendChild(el);
-    }
-    stampRow.setAttribute('aria-label', `Loyalty stamp progress, ${stamps} of ${TOTAL_STAMPS}`);
-    loyaltyStatus.textContent = stamps >= TOTAL_STAMPS
-      ? 'Free coffee unlocked — nice work.'
-      : '';
-  }
-
-  document.getElementById('add-stamp').addEventListener('click', () => {
-    if (stamps < TOTAL_STAMPS) stamps++;
+    document.getElementById('add-stamp').addEventListener('click', () => {
+      if (stamps < TOTAL_STAMPS) stamps++;
+      renderStamps();
+    });
+    document.getElementById('reset-stamp').addEventListener('click', () => {
+      stamps = 0;
+      renderStamps();
+    });
     renderStamps();
-  });
-  document.getElementById('reset-stamp').addEventListener('click', () => {
-    stamps = 0;
-    renderStamps();
-  });
-  renderStamps();
-</script>
+  </script>
 
 </body>
+
 </html>
